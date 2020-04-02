@@ -1,89 +1,380 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
+	<!-- Required meta tags -->
 	<meta charset="utf-8">
-	<title>Welcome to CodeIgniter</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<style type="text/css">
-
-	::selection { background-color: #E13300; color: white; }
-	::-moz-selection { background-color: #E13300; color: white; }
-
-	body {
-		background-color: #fff;
-		margin: 40px;
-		font: 13px/20px normal Helvetica, Arial, sans-serif;
-		color: #4F5155;
-	}
-
-	a {
-		color: #003399;
-		background-color: transparent;
-		font-weight: normal;
-	}
-
-	h1 {
-		color: #444;
-		background-color: transparent;
-		border-bottom: 1px solid #D0D0D0;
-		font-size: 19px;
-		font-weight: normal;
-		margin: 0 0 14px 0;
-		padding: 14px 15px 10px 15px;
-	}
-
-	code {
-		font-family: Consolas, Monaco, Courier New, Courier, monospace;
-		font-size: 12px;
-		background-color: #f9f9f9;
-		border: 1px solid #D0D0D0;
-		color: #002166;
-		display: block;
-		margin: 14px 0 14px 0;
-		padding: 12px 10px 12px 10px;
-	}
-
-	#body {
-		margin: 0 15px 0 15px;
-	}
-
-	p.footer {
-		text-align: right;
-		font-size: 11px;
-		border-top: 1px solid #D0D0D0;
-		line-height: 32px;
-		padding: 0 10px 0 10px;
-		margin: 20px 0 0 0;
-	}
-
-	#container {
-		margin: 10px;
-		border: 1px solid #D0D0D0;
-		box-shadow: 0 0 8px #D0D0D0;
-	}
-	</style>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+	<title>Hello, world!</title>
 </head>
+
 <body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 mt-5">
+				<h1 class="text-center"> CodeIgniter AJAX CRUD</h1>
+				<hr style="background-color: black; color: black; height: 1px">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 mt-2">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal">
+					<i class="fas fa-plus"></i>
+				</button>
 
-<div id="container">
-	<h1>Welcome to CodeIgniter!</h1>
+				<!-- Insert Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Add Data</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form action="post" method="post" id="form">
+									<div class="form-group">
+										<label for="name">Name</label>
+										<input type="text" id="name" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="email">Email</label>
+										<input type="text" id="email" class="form-control">
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary" id="add">Add</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Edit Modal -->
+				<div class="modal fade" id="exampleModaledit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Edit Data </h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
 
-	<div id="body">
-		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
+								<form action="post" method="post" id="edit_form">
+									<input type="hidden" id="edit_id" value="">
+									<div class="form-group">
+										<label for="edit_name">Name</label>
+										<input type="text" id="edit_name" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="edit_email">Email</label>
+										<input type="text" id="edit_email" class="form-control">
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary" id="update">Update</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 mt-3">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
 
-		<p>If you would like to edit this page you'll find it located at:</p>
-		<code>application/views/welcome_message.php</code>
-
-		<p>The corresponding controller for this page is found at:</p>
-		<code>application/controllers/Welcome.php</code>
-
-		<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 
-	<p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo  (ENVIRONMENT === 'development') ?  'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
-</div>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	<script>
+		$(document).on("click", "#add", function(e) {
+			e.preventDefault();
+
+			var name = $('#name').val();
+			var email = $('#email').val();
+
+			$.ajax({
+				url: "<?= base_url() ?>insert",
+				type: "post",
+				dataType: "json",
+				data: {
+					name: name,
+					email: email
+				},
+				success: function(data) {
+					getAll();
+					if (data.response == "success") {
+						toastr["success"](data.message)
+						toastr.options = {
+							"closeButton": true,
+							"debug": false,
+							"newestOnTop": false,
+							"progressBar": true,
+							"positionClass": "toast-top-right",
+							"preventDuplicates": false,
+							"onclick": null,
+							"showDuration": "300",
+							"hideDuration": "1000",
+							"timeOut": "5000",
+							"extendedTimeOut": "1000",
+							"showEasing": "swing",
+							"hideEasing": "linear",
+							"showMethod": "fadeIn",
+							"hideMethod": "fadeOut"
+						}
+					} else {
+						toastr["error"](data.message)
+						toastr.options = {
+							"closeButton": true,
+							"debug": false,
+							"newestOnTop": false,
+							"progressBar": true,
+							"positionClass": "toast-top-right",
+							"preventDuplicates": false,
+							"onclick": null,
+							"showDuration": "300",
+							"hideDuration": "1000",
+							"timeOut": "5000",
+							"extendedTimeOut": "1000",
+							"showEasing": "swing",
+							"hideEasing": "linear",
+							"showMethod": "fadeIn",
+							"hideMethod": "fadeOut"
+						}
+					}
+					$("#exampleModal").modal('hide');
+
+				}
+			});
+			$("#form")[0].reset();
+		});
+
+		function getAll() {
+			$.ajax({
+				url: "<?= base_url(); ?>getall",
+				type: "get",
+				dataType: "json",
+				success: function(data) {
+					var i = 1;
+					var tbody = "";
+
+					for (var key in data) {
+						tbody += "<tr>";
+						tbody += "<td>" + i++ + "</td>";
+						tbody += "<td>" + data[key].nama + "</td>";
+						tbody += "<td>" + data[key].email + "</td>";
+						tbody += `<td>
+										<a href="#" id="edit" class="btn btn-sm btn-outline-info" value="${data[key]['id']}"><i class="fas fa-edit"></i></a>
+										<a href="#" id="del" class="btn btn-sm btn-outline-danger" value="${data[key]['id']}"><i class="fas fa-trash-alt"></i></a>
+							
+									</td>`;
+						tbody += "</tr>";
+						$('#tbody').html(tbody);
+					}
+				}
+			});
+		}
+		getAll();
+
+		$(document).on("click", "#del", function(e) {
+			e.preventDefault();
+			var del_id = $(this).attr("value");
+			if (del_id == "") {
+				alert("delete Id required");
+			} else {
+				const swalWithBootstrapButtons = Swal.mixin({
+					customClass: {
+						confirmButton: 'btn btn-success',
+						cancelButton: 'btn btn-danger mr-2'
+					},
+					buttonsStyling: false
+				})
+
+				swalWithBootstrapButtons.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'No, cancel!',
+					reverseButtons: true
+				}).then((result) => {
+					if (result.value) {
+						$.ajax({
+							url: "<?= base_url(); ?>delete",
+							type: "post",
+							dataType: "json",
+							data: {
+								del_id: del_id
+							},
+							success: function(data) {
+								getAll();
+								if (data.response == "success") {
+									swalWithBootstrapButtons.fire(
+										'Deleted!',
+										'Your file has been deleted.',
+										'success'
+									)
+								}
+							}
+						});
+
+					} else if (
+						/* Read more about handling dismissals below */
+						result.dismiss === Swal.DismissReason.cancel
+					) {
+						swalWithBootstrapButtons.fire(
+							'Cancelled',
+							'Your imaginary file is safe :)',
+							'error'
+						)
+					}
+				});
+			}
+
+		});
+
+		$(document).on("click", "#edit", function(e) {
+			var edit_id = $(this).attr("value");
+			if (edit_id == "") {
+				alert("Edit Id Required");
+			} else {
+				$.ajax({
+					url: "<?= base_url(); ?>edit",
+					type: "post",
+					dataType: "json",
+					data: {
+						edit_id: edit_id
+					},
+					success: function(data) {
+						if (data.response == "success") {
+							$("#exampleModaledit").modal('show');
+							$("#edit_id").val(data.post.id);
+							$("#edit_name").val(data.post.nama);
+							$("#edit_email").val(data.post.email);
+						} else {
+							toastr["error"](data.message)
+							toastr.options = {
+								"closeButton": true,
+								"debug": false,
+								"newestOnTop": false,
+								"progressBar": true,
+								"positionClass": "toast-top-right",
+								"preventDuplicates": false,
+								"onclick": null,
+								"showDuration": "300",
+								"hideDuration": "1000",
+								"timeOut": "5000",
+								"extendedTimeOut": "1000",
+								"showEasing": "swing",
+								"hideEasing": "linear",
+								"showMethod": "fadeIn",
+								"hideMethod": "fadeOut"
+							}
+						}
+					}
+				})
+			}
+		})
+
+		$(document).on("click", "#update", function(e) {
+			e.preventDefault();
+
+			var edit_id = $("#edit_id").val();
+			var edit_name = $("#edit_name").val();
+			var edit_email = $("#edit_email").val();
+
+			if (edit_id == "" || edit_name == "" || edit_email == "") {
+				alert("All field is Required");
+			} else {
+				$.ajax({
+					url: "<?= base_url(); ?>update",
+					type: "post",
+					dataType: "json",
+					data: {
+						edit_id: edit_id,
+						edit_name: edit_name,
+						edit_email: edit_email
+					},
+					success: function(data) {
+						getAll();
+						if (data.response == "success") {
+							$("#exampleModaledit").modal('hide');
+							toastr["success"](data.message)
+							toastr.options = {
+								"closeButton": true,
+								"debug": false,
+								"newestOnTop": false,
+								"progressBar": true,
+								"positionClass": "toast-top-right",
+								"preventDuplicates": false,
+								"onclick": null,
+								"showDuration": "300",
+								"hideDuration": "1000",
+								"timeOut": "5000",
+								"extendedTimeOut": "1000",
+								"showEasing": "swing",
+								"hideEasing": "linear",
+								"showMethod": "fadeIn",
+								"hideMethod": "fadeOut"
+							}
+						} else {
+							toastr["error"](data.message)
+							toastr.options = {
+								"closeButton": true,
+								"debug": false,
+								"newestOnTop": false,
+								"progressBar": true,
+								"positionClass": "toast-top-right",
+								"preventDuplicates": false,
+								"onclick": null,
+								"showDuration": "300",
+								"hideDuration": "1000",
+								"timeOut": "5000",
+								"extendedTimeOut": "1000",
+								"showEasing": "swing",
+								"hideEasing": "linear",
+								"showMethod": "fadeIn",
+								"hideMethod": "fadeOut"
+							}
+
+						}
+					}
+				})
+			}
+		})
+	</script>
 </body>
+
 </html>
