@@ -21,14 +21,33 @@ class Welcome extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			$this->form_validation->set_rules('name', 'Name', 'required');
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+			// $this->form_validation->set_rules('gambar', 'Gambar', 'required');
 			if ($this->form_validation->run() == FALSE) {
 				$data = array('response' => 'error', 'message' => validation_errors());
 			} else {
+				$foto = $_FILES['gambar']['name'];
+				if ($foto == "") {
+					die();
+				}
+				$config['upload_path']          = './upload/';
+				$config['allowed_types']        = 'gif|jpg|png|jpeg';
+				$config['max_size']             = 10000;
+
+				$this->load->library('upload', $config);
+
+
+				if (!$this->upload->do_upload('gambar')) {
+					$data = array('response' => 'error', 'message' => 'Gambar Tidak Tersimpan');
+					echo json_encode($data);
+					// die();
+				} else {
+					$foto = $this->upload->data('file_name');
+				}
 				$ajax_data = array(
 					'nama' => $this->input->post('name'),
-					'email' => $this->input->post('email')
+					'email' => $this->input->post('email'),
+					'gambar' => $foto
 				);
-				// $ajax_data = $this->input->post();
 
 				if ($this->crud_model->insert_entry($ajax_data)) {
 					$data = array('response' => 'success', 'message' => 'Data added Successfully');

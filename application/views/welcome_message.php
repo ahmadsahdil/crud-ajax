@@ -39,7 +39,7 @@
 								</button>
 							</div>
 							<div class="modal-body">
-								<form action="post" method="post" id="form">
+								<form action="post" method="post" id="form" enctype="multipart/form-data">
 									<div class="form-group">
 										<label for="name">Name</label>
 										<input type="text" id="name" class="form-control">
@@ -47,6 +47,10 @@
 									<div class="form-group">
 										<label for="email">Email</label>
 										<input type="text" id="email" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="gambar">Gambar</label>
+										<input type="file" id="gambar" name="gambar" class="form-control">
 									</div>
 								</form>
 							</div>
@@ -98,6 +102,7 @@
 							<th>ID</th>
 							<th>Name</th>
 							<th>Email</th>
+							<th>Gambar</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -120,18 +125,22 @@
 	<script>
 		$(document).on("click", "#add", function(e) {
 			e.preventDefault();
-
+			var fd = new FormData();
 			var name = $('#name').val();
 			var email = $('#email').val();
-
+			var file = $('#gambar')[0].files[0];
+			fd.append('gambar', file);
+			fd.append('name', name);
+			fd.append('email', email);
 			$.ajax({
 				url: "<?= base_url() ?>insert",
 				type: "post",
-				dataType: "json",
-				data: {
-					name: name,
-					email: email
-				},
+				// dataType: "json",
+				data: fd,
+				contentType: false,
+				processData: false,
+				// async: false,
+				cache: false,
 				success: function(data) {
 					getAll();
 					if (data.response == "success") {
@@ -194,6 +203,7 @@
 						tbody += "<td>" + i++ + "</td>";
 						tbody += "<td>" + data[key].nama + "</td>";
 						tbody += "<td>" + data[key].email + "</td>";
+						tbody += `<td> <img src="<?= base_url('upload/') ?>${data[key].gambar}" alt="" height="50px"  width="50px" ></td>`;
 						tbody += `<td>
 										<a href="#" id="edit" class="btn btn-sm btn-outline-info" value="${data[key]['id']}"><i class="fas fa-edit"></i></a>
 										<a href="#" id="del" class="btn btn-sm btn-outline-danger" value="${data[key]['id']}"><i class="fas fa-trash-alt"></i></a>
