@@ -21,23 +21,20 @@ class Welcome extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			$this->form_validation->set_rules('name', 'Name', 'required');
 			$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-			// $this->form_validation->set_rules('gambar', 'Gambar', 'required');
 			if ($this->form_validation->run() == FALSE) {
 				$data = array('response' => 'error', 'message' => validation_errors());
 			} else {
 				$foto = $_FILES['gambar']['name'];
-				if ($foto == "") {
-					die();
-				}
 				$config['upload_path']          = './upload/';
 				$config['allowed_types']        = 'gif|jpg|png|jpeg';
 				$config['max_size']             = 10000;
+				$config['overwrite']             = true;
 
 				$this->load->library('upload', $config);
 
 
 				if (!$this->upload->do_upload('gambar')) {
-					$data = array('response' => 'error', 'message' => 'Gambar Tidak Tersimpan');
+					$data = array('response' => 'error', 'message' => "Gambar Berhasil di Upload");
 					echo json_encode($data);
 					// die();
 				} else {
@@ -71,13 +68,18 @@ class Welcome extends CI_Controller
 			echo "No direct script access allowed";
 		}
 	}
+	public function ambilGambar($id)
+	{
+		return $this->db->get_where('mahasiswa', ['id' => $id])->row();
+	}
 
 	public function delete()
 	{
 		if ($this->input->is_ajax_request()) {
 			$del_id = $this->input->post('del_id');
-
+			$foto = $this->ambilGambar($del_id);
 			if ($this->crud_model->delete_entry($del_id)) {
+				unlink('upload/' . $foto->gambar);
 				$data = array("response" => "success");
 			} else {
 				$data = array("response" => "Failed");

@@ -50,7 +50,7 @@
 									</div>
 									<div class="form-group">
 										<label for="gambar">Gambar</label>
-										<input type="file" id="gambar" name="gambar" class="form-control">
+										<input type="file" id="gambar" name="gambar" class="form-control" required>
 									</div>
 								</form>
 							</div>
@@ -135,7 +135,7 @@
 			$.ajax({
 				url: "<?= base_url() ?>insert",
 				type: "post",
-				// dataType: "json",
+				dataType: "json",
 				data: fd,
 				contentType: false,
 				processData: false,
@@ -249,7 +249,7 @@
 								del_id: del_id
 							},
 							success: function(data) {
-								getAll();
+
 								if (data.response == "success") {
 									swalWithBootstrapButtons.fire(
 										'Deleted!',
@@ -257,6 +257,7 @@
 										'success'
 									)
 								}
+								getAll();
 							}
 						});
 
