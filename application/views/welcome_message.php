@@ -198,6 +198,9 @@
 					var i = 1;
 					var tbody = "";
 
+
+
+
 					for (var key in data) {
 						tbody += "<tr>";
 						tbody += "<td>" + i++ + "</td>";
@@ -210,6 +213,7 @@
 							
 									</td>`;
 						tbody += "</tr>";
+
 						$('#tbody').html(tbody);
 					}
 				}
@@ -250,6 +254,7 @@
 							},
 							success: function(data) {
 
+
 								if (data.response == "success") {
 									swalWithBootstrapButtons.fire(
 										'Deleted!',
@@ -257,7 +262,12 @@
 										'success'
 									)
 								}
-								getAll();
+								if (getAll() == null) {
+									$('#tbody').empty();
+								} else {
+									getAll();
+								}
+
 							}
 						});
 
