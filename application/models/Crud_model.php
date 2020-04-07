@@ -34,7 +34,6 @@ class Crud_model extends CI_Model
     }
     public function update_entry($data)
     {
-
         return $this->db->update('mahasiswa', $data,  array('id' => $data['id']));
     }
 }

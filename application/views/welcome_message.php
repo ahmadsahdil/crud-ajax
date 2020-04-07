@@ -73,7 +73,7 @@
 							</div>
 							<div class="modal-body">
 
-								<form action="post" method="post" id="edit_form">
+								<form action="post" method="post" id="edit_form" enctype="multipart/form-data">
 									<input type="hidden" id="edit_id" value="">
 									<div class="form-group">
 										<label for="edit_name">Name</label>
@@ -82,6 +82,11 @@
 									<div class="form-group">
 										<label for="edit_email">Email</label>
 										<input type="text" id="edit_email" class="form-control">
+									</div>
+									<div class="form-group">
+										<label for="gambar">Gambar</label>
+										<input type="file" id="edit_gambar" class="form-control">
+										<div id="view-gambar"></div>
 									</div>
 								</form>
 							</div>
@@ -288,6 +293,7 @@
 
 		$(document).on("click", "#edit", function(e) {
 			var edit_id = $(this).attr("value");
+			$('#edit_gambar').val('');
 			if (edit_id == "") {
 				alert("Edit Id Required");
 			} else {
@@ -299,11 +305,13 @@
 						edit_id: edit_id
 					},
 					success: function(data) {
+						console.log(data);
 						if (data.response == "success") {
 							$("#exampleModaledit").modal('show');
 							$("#edit_id").val(data.post.id);
 							$("#edit_name").val(data.post.nama);
 							$("#edit_email").val(data.post.email);
+							$("#view-gambar").html('<img src="<?= base_url('upload/') ?>' + data.post.gambar + '" alt="" height="100px"  width="100px" >')
 						} else {
 							toastr["error"](data.message)
 							toastr.options = {
@@ -332,9 +340,15 @@
 		$(document).on("click", "#update", function(e) {
 			e.preventDefault();
 
+			var fd = new FormData();
 			var edit_id = $("#edit_id").val();
 			var edit_name = $("#edit_name").val();
 			var edit_email = $("#edit_email").val();
+			var file = $('#edit_gambar')[0].files[0];
+			fd.append('gambar', file);
+			fd.append('edit_name', edit_name);
+			fd.append('edit_email', edit_email);
+			fd.append('edit_id', edit_id);
 
 			if (edit_id == "" || edit_name == "" || edit_email == "") {
 				alert("All field is Required");
@@ -343,11 +357,11 @@
 					url: "<?= base_url(); ?>update",
 					type: "post",
 					dataType: "json",
-					data: {
-						edit_id: edit_id,
-						edit_name: edit_name,
-						edit_email: edit_email
-					},
+					data: fd,
+					contentType: false,
+					processData: false,
+					// async: false,
+					cache: false,
 					success: function(data) {
 						getAll();
 						if (data.response == "success") {
